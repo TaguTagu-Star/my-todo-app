@@ -1,25 +1,21 @@
 <template>
-  <TodoList />
+  <TaskList :taskKind="TaskKind.DAY" :taskDate="currentDate" />
 </template>
 
 <script>
-import TodoList from './components/TodoList.vue'
+import TaskList from './components/TaskList.vue'
+import TaskKind from './enums/TaskKind'
 
 export default {
   name: 'App',
   components: {
-    TodoList
+    TaskList
+  },
+  data(){
+    return {
+      currentDate: new Date(),
+      TaskKind,
+    };
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

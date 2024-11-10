@@ -48,7 +48,3 @@ export default {
   }
 };
 </script>
-
-<style>
-/* Tailwind CSSによるスタイルが自動的に適用されます */
-</style>
