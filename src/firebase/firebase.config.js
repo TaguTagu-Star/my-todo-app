@@ -1,6 +1,6 @@
 // src/firebase/config.js
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, update } from "firebase/database";
+import { getDatabase, ref, onValue, update, set } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -19,7 +19,8 @@ const firebaseUtils ={
   firebaseDb,
   ref,
   onValue,
-  update
+  update,
+  set
 }
 
 export default firebaseUtils;
