@@ -1,0 +1,88 @@
+<template>
+  <div >
+    <button class="flex justify-between items-center border border-black rounded w-11/12 ml-2 mt-4 mb-1 mr-2"
+      v-on:click="changeOpenClose">
+      <span>・MM月DD日のタスク一覧</span>
+      <span v-if="!openFlag">↓</span>
+      <span v-if="openFlag">↑</span>
+    </button>
+    <div v-if="openFlag">
+      <div class="flex justify-between items-center border border-black w-11/12 m-2 ml-6" 
+        v-for="item in todoList" v-bind:key="item.task_id">
+        <div>
+          <input type="checkbox" :id="item.id" v-on:click="changeCheckBox(item.id, $event.target.checked)" v-model="item.doneFlag">
+          <span v-if="!item.isEdit" class="m-1">{{ item.task_name }}</span>
+          <input v-if="item.isEdit" v-model="item.editValue" type="textbox" :placeholder="item.task_name">
+        </div>
+        <div>
+          <button v-if="item.isEdit" @click="changeEditMode(item.task_id)" class="bg-red-300 text-xs p-1 m-1 rounded  ">キャンセル</button>
+          <button v-if="item.isEdit" @click="clickAttachButton(item.task_id, item.editValue)" class="bg-green-300 text-xs p-1 m-1 rounded  ">完了</button>
+          <button v-if="!item.isEdit" @click="changeEditMode(item.task_id)" class="bg-orange-300 text-xs p-1 m-1 rounded">編集</button>
+          <button v-if="!item.isEdit" class="bg-red-400 text-xs p-1 m-1 rounded w-15">削除</button>
+        </div>
+      </div>
+    </div>
+
+</div>
+</template>
+
+<script>
+import firebaseUtils from '../firebase/firebase.config.js'
+
+export default {
+  data() {
+    return {
+      todoList: [],
+      openFlag:false,
+    };
+  },
+  created(){
+    const initTaskList = firebaseUtils.ref(firebaseUtils.firebaseDb,"task_list");
+    firebaseUtils.onValue(initTaskList, snapshot=>{
+      const data = snapshot.val();
+      if(data){
+        const taskList = Object.keys(data).map(key =>({
+          id: key,
+          task_id: data[key].task_id,
+          task_name: data[key].task_name,
+          doneFlag: data[key].doneFlag,
+          kind: data[key].kind,
+          isEdit: false,
+          editValue: data[key].task_name,
+        }));
+        this.todoList = taskList;
+      }
+    });
+  },
+  methods: {
+    changeOpenClose(){
+      this.openFlag=!this.openFlag;
+    },
+    async changeCheckBox(task_id, isChecked){
+      const updateContents = {};
+      updateContents['/task_list/' + task_id + '/doneFlag'] = isChecked;
+      try{
+        await firebaseUtils.update(firebaseUtils.ref(firebaseUtils.firebaseDb),updateContents);
+      }catch(error){
+        console.error("Error updating Data:", error);
+      }
+    },
+    changeEditMode(task_id){
+      this.todoList[task_id-1].isEdit = !this.todoList[task_id-1].isEdit;
+    },
+    clickAttachButton(task_id, editValue){
+      this.attachEdit(task_id,editValue);
+    },
+    async attachEdit(task_id, editValue){
+      //更新用オブジェクトを作成し更新
+      const updateContents = {};
+      updateContents['/task_list/' + task_id + '/task_name'] = editValue;
+      try{
+        await firebaseUtils.update(firebaseUtils.ref(firebaseUtils.firebaseDb),updateContents);
+      }catch(error){
+        console.error("Error updating Data:", error);
+      }
+    }
+  }
+};
+</script>
