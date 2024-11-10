@@ -2,7 +2,7 @@
   <div >
     <button class="flex justify-between items-center border border-black rounded w-11/12 ml-2 mt-4 mb-1 mr-2"
       v-on:click="changeOpenClose">
-      <span>・MM月DD日のタスク一覧</span>
+      <span>{{ listName }} </span>
       <span v-if="!openFlag">↓</span>
       <span v-if="openFlag">↑</span>
     </button>
@@ -28,15 +28,42 @@
 
 <script>
 import firebaseUtils from '../firebase/firebase.config.js'
+import { format } from 'date-fns'
 
 export default {
+  props:{
+    taskKind:{
+      type: Number,
+      required: false,
+    },
+    taskDate:{
+      type: Date,
+      required: false,
+    }
+  },
   data() {
     return {
+      listName:'',
       todoList: [],
       openFlag:false,
     };
   },
   created(){
+    // タスクリストの表示名の初期化
+    switch (this.taskKind){
+      case 1: // day
+      console.log('case 1');
+        this.listName = format(this.taskDate, 'MM月dd日');
+        break;
+      case 2: // week
+        this.listName = format(new Date(this.taskDate.getFullYear(), this.taskDate.getMonth(),this.taskDate.getDate()-this.taskDate.getDay()), 'MM月dd日週');
+        break;
+      case 3: // month
+        this.listName = format(this.taskDate, 'yyyy年MM月');
+        break;
+    }
+    this.listName = '・' + this.listName + 'のタスク一覧';
+    // タスクリストの初期化処理
     const initTaskList = firebaseUtils.ref(firebaseUtils.firebaseDb,"task_list");
     firebaseUtils.onValue(initTaskList, snapshot=>{
       const data = snapshot.val();
@@ -53,6 +80,7 @@ export default {
         this.todoList = taskList;
       }
     });
+
   },
   methods: {
     changeOpenClose(){
