@@ -76,7 +76,7 @@ export default {
           kind: data[key].kind,
           isEdit: false,
           editValue: data[key].task_name,
-        }));
+        })).filter(item=>(item.kind == this.taskKind));
         this.todoList = taskList;
       }
     });
