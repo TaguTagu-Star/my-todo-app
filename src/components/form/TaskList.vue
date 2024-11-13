@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import firebaseUtils from '../firebase/firebase.config.js'
-import ConfirmPopup from './ConfirmPopup.vue'
+import firebaseUtils from '@/firebase/firebase.config.js';
+import ConfirmPopup from '@/components/common/ConfirmPopup.vue'
 import { format } from 'date-fns'
 
 export default {

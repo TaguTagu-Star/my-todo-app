@@ -2,7 +2,7 @@
 
 <div class="w-20 block">
   <div class="flex">
-    <img src="../assets/images/sample_image1.png" alt="sample-image1" class="border w-8 h-auto rounded-full" />
+    <img src="@/assets/images/sample_image1.png" alt="sample-image1" class="border w-8 h-auto rounded-full" />
     <div>
       <p class="text-xs">ユーザー名</p>
     </div>
